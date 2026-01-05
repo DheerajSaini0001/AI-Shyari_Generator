@@ -82,7 +82,7 @@ router.post("/generate", async (req, res) => {
     const randomTheme = themes[Math.floor(Math.random() * themes.length)];
 
     const prompt = `
-You are an expert Hindi–Urdu Shayari writer with a Pakistani poetic style.
+You are an expert Hindi Shayari writer with a Pakistani poetic style.
 
 Mood: ${mood}
 Purpose: ${purpose}
@@ -102,7 +102,7 @@ Style Guidelines:
 - Natural rhythm and depth like classical mushaira shayari
 
 Rules:
-- Hindi / Hinglish / light Urdu mix allowed
+- Hindi / Hinglish  mix allowed
 - No emojis
 - Avoid clichés and copied verses
 - End with an emotionally impactful line
