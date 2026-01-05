@@ -26,12 +26,17 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
 
+import communityRoutes from "./routes/community.js";
+import notificationRoutes from "./routes/notifications.js";
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/shayari", shayariRoutes);
+app.use("/api/community", communityRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
-    res.send("AI Shayari Generator API is running 🚀");
+    res.send("अल्फाज़ API is running 🚀");
 });
 
 app.listen(PORT, () => {

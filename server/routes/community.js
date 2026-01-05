@@ -1,0 +1,148 @@
+import express from "express";
+import auth from "../middleware/auth.js";
+import CommunityShayari from "../models/CommunityShayari.js";
+import User from "../models/User.js";
+import Notification from "../models/Notification.js";
+
+const router = express.Router();
+
+// Middleware to check Admin status
+// Middleware to check Admin status
+const adminAuth = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.userId);
+        console.log(`[AdminAuth] User ID: ${req.user.userId}, IsAdmin: ${user?.isAdmin}`);
+
+        if (!user || !user.isAdmin) {
+            console.log("[AdminAuth] Access Denied");
+            return res.status(403).json({ message: "Access denied. Admins only." });
+        }
+        next();
+    } catch (err) {
+        console.error("[AdminAuth] Error:", err);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+// @route   POST /api/community/compose
+// @desc    Submit a Shayari for approval
+router.post("/compose", auth, async (req, res) => {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ message: "Text is required" });
+
+    try {
+        const user = await User.findById(req.user.userId);
+        const newShayari = new CommunityShayari({
+            text,
+            author: req.user.userId,
+            authorName: user.name
+        });
+
+        await newShayari.save();
+        res.json({ message: "Shayari submitted for approval!", shayari: newShayari });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// @route   GET /api/community/feed
+// @desc    Get all approved shayaris
+router.get("/feed", async (req, res) => {
+    try {
+        const feed = await CommunityShayari.find({ status: "approved" })
+            .sort({ createdAt: -1 })
+            .populate("author", "name");
+        res.json(feed);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// @route   POST /api/community/like/:id
+// @desc    Like a community shayari
+router.post("/like/:id", auth, async (req, res) => {
+    try {
+        const shayari = await CommunityShayari.findById(req.params.id);
+        if (!shayari) return res.status(404).json({ message: "Shayari not found" });
+
+        if (shayari.likes.includes(req.user.userId)) {
+            // Unlike
+            shayari.likes = shayari.likes.filter(id => id.toString() !== req.user.userId);
+        } else {
+            // Like
+            shayari.likes.push(req.user.userId);
+        }
+
+        await shayari.save();
+        res.json(shayari.likes);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// --- ADMIN ROUTES ---
+
+// @route   GET /api/community/pending
+// @desc    Get pending shayaris (Admin only)
+router.get("/pending", auth, adminAuth, async (req, res) => {
+    try {
+        const pending = await CommunityShayari.find({ status: "pending" }).sort({ createdAt: -1 });
+        res.json(pending);
+    } catch (err) {
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// @route   PUT /api/community/approve/:id
+// @desc    Approve a shayari (Admin only)
+router.put("/approve/:id", auth, adminAuth, async (req, res) => {
+    try {
+        const shayari = await CommunityShayari.findById(req.params.id);
+        if (!shayari) return res.status(404).json({ message: "Shayari not found" });
+
+        shayari.status = "approved";
+        await shayari.save();
+
+        // Create notification for author
+        const notification = new Notification({
+            recipient: shayari.author,
+            message: "Good news! Your shayari has been approved and is now live on the feed. 🎉",
+            type: "success"
+        });
+        await notification.save();
+
+        res.json({ message: "Shayari approved successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// @route   PUT /api/community/reject/:id
+router.put("/reject/:id", auth, adminAuth, async (req, res) => {
+    try {
+        const shayari = await CommunityShayari.findById(req.params.id);
+        if (!shayari) return res.status(404).json({ message: "Shayari not found" });
+
+        shayari.status = "rejected";
+        await shayari.save();
+
+        // Create notification for author
+        const notification = new Notification({
+            recipient: shayari.author,
+            message: "Your recent shayari submission was moderated/rejected. Please ensure it follows community guidelines.",
+            type: "error"
+        });
+        await notification.save();
+
+        res.json({ message: "Shayari rejected" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+export default router;

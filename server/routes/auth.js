@@ -9,14 +9,18 @@ const router = express.Router();
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // Register with OTP
+import { runWorkerTask } from "../utils/workerHandler.js";
+
+// Register with OTP
 router.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
     try {
         let user = await User.findOne({ email });
         if (user && user.isVerified) return res.status(400).json({ message: "User already exists" });
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Worker Thread: Hash Password
+        const hashedPassword = await runWorkerTask("hashPassword", { password });
+
         const otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000; // 10 mins
 
@@ -44,11 +48,15 @@ router.post("/register", async (req, res) => {
     `;
 
         try {
-            await sendEmail({
-                email: user.email,
-                subject: "Your OTP Code - AI Shayari Generator",
+            // Worker Thread: Send Email
+            // Note: We await here to ensure success before responding, but it runs in separate thread
+            await runWorkerTask("sendEmail", {
+                auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+                to: user.email,
+                subject: "Your OTP Code - अल्फाज़",
                 html: message
             });
+
             res.status(201).json({ message: "OTP sent to your email", email });
         } catch (err) {
             console.error(err);
@@ -99,7 +107,7 @@ router.post("/verify-otp", async (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         console.log("[Verify] Success!");
-        res.json({ message: "Email verified!", token, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ message: "Email verified!", token, user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin } });
 
     } catch (err) {
         console.error(err);
@@ -122,10 +130,11 @@ router.post("/login", async (req, res) => {
         const payload = { userId: user._id };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ token, user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin } });
 
     } catch (err) {
-        res.status(500).json({ message: "Server Error" });
+        console.error("Login Error:", err);
+        res.status(500).json({ message: "Server Error: " + err.message });
     }
 });
 
@@ -149,7 +158,7 @@ router.post("/login-otp-request", async (req, res) => {
 
         await sendEmail({
             email: user.email,
-            subject: "Login Key - AI Shayari Generator",
+            subject: "Login Key - अल्फाज़",
             html: message
         });
 
@@ -196,9 +205,26 @@ router.post("/login-otp-verify", async (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         console.log("[Login Verify] Success!");
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ token, user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin } });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// DEV ROUTE: Make me Admin
+router.post("/dev/make-admin", async (req, res) => {
+    const { email, secret } = req.body;
+    if (secret !== "admin123") return res.status(403).json({ message: "Forbidden" });
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.isAdmin = true;
+        await user.save();
+        res.json({ message: `User ${email} is now an Admin` });
+    } catch (err) {
         res.status(500).json({ message: "Server Error" });
     }
 });

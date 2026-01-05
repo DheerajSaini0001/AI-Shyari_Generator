@@ -10,7 +10,7 @@ const sendEmail = async (options) => {
     });
 
     const mailOptions = {
-        from: `"AI Shayari Generator" <${process.env.EMAIL_USER}>`,
+        from: `"अल्फाज़" <${process.env.EMAIL_USER}>`,
         to: options.email,
         subject: options.subject,
         html: options.html,
