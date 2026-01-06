@@ -45,7 +45,7 @@ export default function VerifyOtp() {
             localStorage.setItem("user", JSON.stringify(data.user));
 
             setTimeout(() => {
-                navigate("/");
+                navigate("/home");
             }, 1000);
         } catch (err) {
             setError(err.message || "Verification failed");
@@ -57,7 +57,7 @@ export default function VerifyOtp() {
     if (!email) {
         return (
             <div className="min-h-screen mx-2 flex items-center justify-center bg-black text-white">
-                <p>No email provided. <Link to="/login" className="text-yellow-500">Go to Login</Link></p>
+                <p>No email provided. <Link to="/" className="text-yellow-500">Go to Login</Link></p>
             </div>
         );
     }

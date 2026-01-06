@@ -41,7 +41,7 @@ export default function VerifyEmail() {
                         <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
                         <h2 className="text-2xl font-bold text-white">Email Verified!</h2>
                         <p className="text-zinc-400">Your account is now active.</p>
-                        <Link to="/login" className="inline-block bg-yellow-500 text-black px-6 py-2 rounded-lg font-bold hover:bg-yellow-400">
+                        <Link to="/" className="inline-block bg-yellow-500 text-black px-6 py-2 rounded-lg font-bold hover:bg-yellow-400">
                             Login Now
                         </Link>
                     </div>
@@ -52,7 +52,7 @@ export default function VerifyEmail() {
                         <XCircle className="w-16 h-16 text-red-500 mx-auto" />
                         <h2 className="text-2xl font-bold text-white">Verification Failed</h2>
                         <p className="text-zinc-400">Invalid or expired token.</p>
-                        <Link to="/login" className="inline-block bg-zinc-700 text-white px-6 py-2 rounded-lg font-bold hover:bg-zinc-600">
+                        <Link to="/" className="inline-block bg-zinc-700 text-white px-6 py-2 rounded-lg font-bold hover:bg-zinc-600">
                             Go to Login
                         </Link>
                     </div>

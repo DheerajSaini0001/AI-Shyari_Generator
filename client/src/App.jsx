@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 // Protected Route Component
 const ProtectedRoute = () => {
   const token = localStorage.getItem("token");
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/" />;
 };
 
 const Layout = () => {
@@ -47,14 +47,14 @@ const Layout = () => {
         {/* Static Header */}
         <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-md transition-colors ${darkMode ? "border-white/5 bg-black/20" : "border-gray-200 bg-white/80"}`}>
           <div className="w-full px-4 flex justify-between items-center">
-            <Link to="/" className={`text-xl font-bold tracking-tight hover:text-yellow-500 transition-colors ${darkMode ? "text-white" : "text-gray-900"}`}>
+            <Link to="/home" className={`text-xl font-bold tracking-tight hover:text-yellow-500 transition-colors ${darkMode ? "text-white" : "text-gray-900"}`}>
               अल्फ़ाज़ ✨
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex gap-4 items-center">
               <ThemeToggle />
-              <Link to="/" className={`p-2 pb-4 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Home">
+              <Link to="/home" className={`p-2 pb-4 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Home">
                 <Home className="w-5 h-5" />
               </Link>
               <Link to="/feed" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Community Feed">
@@ -79,7 +79,7 @@ const Layout = () => {
               )}
 
               <button
-                onClick={() => { localStorage.clear(); window.location.href = "/login"; }}
+                onClick={() => { localStorage.clear(); window.location.href = "/"; }}
                 className="p-2 rounded-full bg-red-600/20 text-red-400 border border-red-600/50 hover:bg-red-600 hover:text-white transition-all"
                 title="Logout"
               >
@@ -103,7 +103,7 @@ const Layout = () => {
           {isMobileMenuOpen && (
             <div className={`md:hidden absolute top-full left-0 w-full border-b p-4 flex flex-col gap-4 shadow-xl ${darkMode ? "bg-black/95 border-white/5" : "bg-white/95 border-gray-200"}`}>
               <Link
-                to="/"
+                to="/home"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? "hover:bg-white/5 text-zinc-300 hover:text-white" : "hover:bg-gray-100 text-gray-700 hover:text-black"}`}
               >
@@ -148,7 +148,7 @@ const Layout = () => {
               )}
 
               <button
-                onClick={() => { localStorage.clear(); window.location.href = "/login"; }}
+                onClick={() => { localStorage.clear(); window.location.href = "/"; }}
                 className="flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-500/10 w-full text-left"
               >
                 <LogOut className="w-5 h-5" /> Logout
@@ -173,7 +173,7 @@ function App() {
         <div className="min-h-screen w-full font-sans transition-colors">
           <Routes>
             {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/verify/:token" element={<VerifyEmail />} />
@@ -182,7 +182,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               {/* Main App Layout */}
               <Route element={<Layout />}>
-                <Route path="/" element={<ShayariAI />} />
+                <Route path="/home" element={<ShayariAI />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/compose" element={<Compose />} />
@@ -191,7 +191,7 @@ function App() {
             </Route>
 
             {/* Redirect unknown to login */}
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </Router>
