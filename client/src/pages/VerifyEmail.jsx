@@ -9,7 +9,7 @@ export default function VerifyEmail() {
     useEffect(() => {
         const verify = async () => {
             try {
-                const response = await fetch("http://localhost:5011/api/auth/verify-email", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/verify-email`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

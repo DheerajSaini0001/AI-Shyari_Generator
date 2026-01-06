@@ -20,11 +20,11 @@ export default function VerifyOtp() {
         setSuccess("");
 
         const endpoint = isSignup
-            ? "http://localhost:5011/api/auth/verify-otp"
-            : "http://localhost:5011/api/auth/login-otp-verify";
+            ? `${import.meta.env.VITE_API_URL}/api/auth/verify-otp`
+            : `${import.meta.env.VITE_API_URL}/api/auth/login-otp-verify`;
 
         try {
-            const response = await fetch(endpoint.replace("5011", "5011"), {
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

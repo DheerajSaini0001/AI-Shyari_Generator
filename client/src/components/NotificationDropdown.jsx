@@ -26,7 +26,7 @@ export default function NotificationDropdown() {
         if (!token) return;
 
         try {
-            const response = await fetch("http://localhost:5011/api/notifications", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/notifications`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {
@@ -49,7 +49,7 @@ export default function NotificationDropdown() {
     const markAsRead = async (id) => {
         const token = localStorage.getItem("token");
         try {
-            await fetch(`http://localhost:5011/api/notifications/${id}/read`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/${id}/read`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -66,7 +66,7 @@ export default function NotificationDropdown() {
     const markAllAsRead = async () => {
         const token = localStorage.getItem("token");
         try {
-            await fetch("http://localhost:5011/api/notifications/read-all", {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/read-all`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });

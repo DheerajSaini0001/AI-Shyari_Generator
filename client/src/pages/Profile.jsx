@@ -30,7 +30,7 @@ export default function Profile() {
         }
 
         try {
-            const response = await fetch("http://localhost:5011/api/shayari/liked", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shayari/liked`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -52,7 +52,7 @@ export default function Profile() {
         if (!token) return;
 
         try {
-            const response = await fetch("http://localhost:5011/api/community/my-posts", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/community/my-posts`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -77,7 +77,7 @@ export default function Profile() {
         if (!token) return;
 
         try {
-            const response = await fetch(`http://localhost:5011/api/shayari/like/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shayari/like/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`

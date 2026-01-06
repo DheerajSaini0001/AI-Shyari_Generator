@@ -15,7 +15,7 @@ export default function AdminDashboard() {
     const fetchPending = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:5011/api/community/pending", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/community/pending`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
 
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
     const handleAction = async (id, action) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:5011/api/community/${action}/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/community/${action}/${id}`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` }
             });

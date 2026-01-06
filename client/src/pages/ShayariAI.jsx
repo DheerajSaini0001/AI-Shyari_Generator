@@ -25,7 +25,7 @@ export default function ShayariAI() {
     setShayari("");
 
     try {
-      const response = await fetch("http://localhost:5011/api/shayari/generate", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shayari/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

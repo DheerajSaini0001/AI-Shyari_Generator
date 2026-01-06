@@ -19,7 +19,7 @@ export default function Feed() {
     const fetchFeed = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5011/api/community/feed?type=${activeTab}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/community/feed?type=${activeTab}`);
             if (response.ok) {
                 const data = await response.json();
                 setFeed(data);
@@ -39,7 +39,7 @@ export default function Feed() {
         }
 
         try {
-            const response = await fetch(`http://localhost:5011/api/community/like/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/community/like/${id}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
