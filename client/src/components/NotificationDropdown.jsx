@@ -63,10 +63,33 @@ export default function NotificationDropdown() {
         }
     };
 
+    const markAllAsRead = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            await fetch("http://localhost:5011/api/notifications/read-all", {
+                method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+            setUnreadCount(0);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const toggleDropdown = () => {
+        const newState = !isOpen;
+        setIsOpen(newState);
+
+        if (newState && unreadCount > 0) {
+            markAllAsRead();
+        }
+    };
+
     return (
         <div className="relative" ref={dropdownRef}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleDropdown}
                 className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors relative"
                 title="Notifications"
             >
@@ -103,7 +126,7 @@ export default function NotificationDropdown() {
                                         className={`p-4 border-b border-zinc-800/50 hover:bg-zinc-800/50 transition-colors flex gap-3 ${!notif.isRead ? 'bg-zinc-800/30' : ''}`}
                                     >
                                         <div className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${notif.type === 'success' ? 'bg-green-500' :
-                                                notif.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                                            notif.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
                                             }`} />
 
                                         <div className="flex-1">

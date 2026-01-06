@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Sparkles, PenTool, Share2, Heart, Copy } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, PenTool } from "lucide-react";
 import GlassPanel from "./GlassPanel";
-import OptionButton from "./OptionButton";
 import GlowButton from "./GlowButton";
 import ShayariCard from "./ShayariCard";
 
@@ -26,35 +24,30 @@ export default function ShayariAI() {
         depth: ["Light", "Medium", "Deep", "Philosophical"],
     };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
     const generate = async () => {
         setLoading(true);
         setShayari("");
-        setIsLiked(false);
         setError("");
+        setIsLiked(false);
 
         try {
-            // Assuming server runs on 5011, configuring fetch base for dev
-            const response = await fetch("http://localhost:5011/api/shayari/generate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
+            const response = await fetch(
+                "http://localhost:5011/api/shayari/generate",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData),
+                }
+            );
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to generate Shayari");
+                throw new Error(data.error || "Failed to generate shayari");
             }
 
             setShayari(data.shayari);
         } catch (err) {
-            console.error(err);
             setError("Failed to generate Shayari. Ensure backend is running.");
         } finally {
             setLoading(false);
@@ -62,107 +55,94 @@ export default function ShayariAI() {
     };
 
     const copyToClipboard = () => {
-        if (shayari) {
-            navigator.clipboard.writeText(shayari);
-            // Optional: Show toast
-        }
+        if (shayari) navigator.clipboard.writeText(shayari);
     };
 
     const shareShayari = async () => {
         if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'AI Generated Shayari',
-                    text: shayari,
-                    url: window.location.href, // Or your app's deployed URL
-                });
-            } catch (error) {
-                console.log('Error sharing:', error);
-            }
+            await navigator.share({
+                title: "AI Generated Shayari",
+                text: shayari,
+                url: window.location.href,
+            });
         } else {
-            // Fallback for browsers not supporting Web Share API
-            // Could open a modal or specific links here if needed
-            alert("Web Share API not supported on this browser. Copied to clipboard instead!");
             copyToClipboard();
+            alert("Copied to clipboard (Share not supported)");
         }
     };
 
     const likeShayari = async () => {
         const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Please login to save favorites!");
-            return;
-        }
+        if (!token) return alert("Please login first");
 
-        try {
-            const response = await fetch("http://localhost:5011/api/shayari/like", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ shayari })
-            });
+        await fetch("http://localhost:5011/api/shayari/like", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ shayari }),
+        });
 
-            if (response.ok) {
-                setIsLiked(true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        setIsLiked(true);
     };
 
     return (
-        <div className="w-full">
-            <div className="text-center mb-8">
-                <h1 className="text-5xl font-extrabold mb-2 tracking-tight">
-                    <span className="gradient-text">अल्फाज़</span> <span className="text-4xl">✨</span>
+        <>
+            {/* HERO */}
+            <div className="text-center mb-16">
+                <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
+                    <span className="gradient-text">अल्फ़ाज़</span>
                 </h1>
-                <p className="text-zinc-400 text-lg">Create soul-touching poetry powered by Artificial Intelligence.</p>
+                <p className="text-zinc-400 mt-4 max-w-xl mx-auto">
+                    Craft soulful poetry through the harmony of emotions and artificial intelligence
+                </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
-                <GlassPanel className="p-8 w-full lg:w-1/2">
-                    <div className="space-y-6">
-                        {Object.entries(options).map(([key, values]) => (
-                            <div key={key}>
-                                <label className="block text-sm font-medium text-zinc-300 uppercase tracking-wider mb-2">
-                                    {key}
-                                </label>
-                                <div className="flex flex-wrap gap-2">
-                                    {values.map((val) => (
-                                        <OptionButton
-                                            key={val}
-                                            active={formData[key] === val}
-                                            onClick={() => setFormData({ ...formData, [key]: val })}
-                                        >
-                                            {val}
-                                        </OptionButton>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+            {/* MAIN GRID */}
+            <div className="grid lg:grid-cols-2 gap-10">
+                {/* CONTROLS */}
+                <GlassPanel className="p-8">
+                    {Object.entries(options).map(([key, values]) => (
+                        <div key={key} className="mb-8 text-left">
+                            <p className="text-xs uppercase tracking-wider text-zinc-400 mb-4">
+                                {key}
+                            </p>
 
-                    <div className="mt-8">
-                        <GlowButton loading={loading} onClick={generate}>
-                            {loading ? (
-                                <span className="flex items-center gap-2 justify-center">
-                                    <Sparkles className="animate-spin" /> Generating Magic...
-                                </span>
-                            ) : (
-                                <span className="flex items-center gap-2 justify-center">
-                                    <PenTool className="w-5 h-5" /> Generate Shayari
-                                </span>
-                            )}
-                        </GlowButton>
-                    </div>
+                            <div className="flex flex-wrap gap-3">
+                                {values.map((v) => (
+                                    <button
+                                        key={v}
+                                        onClick={() => setFormData({ ...formData, [key]: v })}
+                                        className={`px-4 py-2 rounded-full border text-sm transition-all ${formData[key] === v
+                                                ? "bg-yellow-500 text-black border-yellow-400 neon-glow"
+                                                : "bg-zinc-900/60 text-zinc-400 border-zinc-700 hover:border-zinc-500"
+                                            }`}
+                                    >
+                                        {v}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+
+                    <GlowButton loading={loading} onClick={generate}>
+                        {loading ? (
+                            <span className="flex items-center gap-2 justify-center">
+                                <Sparkles className="animate-spin" />
+                                Creating poetry…
+                            </span>
+                        ) : (
+                            <span className="flex items-center gap-2 justify-center">
+                                <PenTool className="w-4 h-4" />
+                                Generate Shayari
+                            </span>
+                        )}
+                    </GlowButton>
                 </GlassPanel>
 
-                {/* Output Display Panel */}
-                <GlassPanel className="w-full lg:w-1/2 p-8 min-h-[400px] flex flex-col justify-center items-center relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-50"></div>
-
+                {/* OUTPUT */}
+                <GlassPanel className="p-8 min-h-[380px] flex items-center justify-center relative">
                     {shayari ? (
                         <ShayariCard
                             shayari={shayari}
@@ -172,21 +152,27 @@ export default function ShayariAI() {
                             isLiked={isLiked}
                         />
                     ) : (
-                        <div className="text-center text-zinc-500">
+                        <div className="text-zinc-500 text-center">
                             {error ? (
-                                <div className="text-red-400 bg-red-900/20 p-4 rounded-lg border border-red-900/50">
+                                <div className="text-red-400 bg-red-900/20 p-4 rounded-lg border border-red-900/40">
                                     {error}
                                 </div>
                             ) : (
                                 <>
-                                    <Sparkles className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                                    <p className="text-lg">Select your vibe and hit generate.</p>
+                                    <Sparkles
+                                        className="mx-auto mb-5 opacity-30"
+                                        size={52}
+                                    />
+                                    <p className="text-sm">
+                                        Select your mood and depth<br />
+                                        then let the magic unfold
+                                    </p>
                                 </>
                             )}
                         </div>
                     )}
                 </GlassPanel>
             </div>
-        </div>
+        </>
     );
 }

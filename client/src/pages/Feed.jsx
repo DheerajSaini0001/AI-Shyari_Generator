@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Copy, Heart, Clock, User as UserIcon } from "lucide-react";
+import { Copy, Heart, Clock, User as UserIcon, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassPanel from "../components/GlassPanel";
 
@@ -54,6 +54,25 @@ export default function Feed() {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
+        // Optional: You could show a toast here 'Copied!'
+    };
+
+    const handleShare = async (text) => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Alfaaz Shayari',
+                    text: text,
+                    url: window.location.href, // or specific deep link if you have one
+                });
+            } catch (error) {
+                console.log('Error sharing:', error);
+            }
+        } else {
+            // Fallback
+            copyToClipboard(text);
+            alert("Copied to clipboard for sharing!");
+        }
     };
 
     const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -119,13 +138,22 @@ export default function Feed() {
                                             </button>
                                         </div>
 
-                                        <button
-                                            onClick={() => copyToClipboard(item.text)}
-                                            className="text-zinc-500 hover:text-yellow-500 transition-colors"
-                                            title="Copy"
-                                        >
-                                            <Copy className="w-4 h-4" />
-                                        </button>
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => copyToClipboard(item.text)}
+                                                className="text-zinc-500 hover:text-yellow-500 transition-colors"
+                                                title="Copy"
+                                            >
+                                                <Copy className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleShare(item.text)}
+                                                className="text-zinc-500 hover:text-blue-500 transition-colors"
+                                                title="Share"
+                                            >
+                                                <Share2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </GlassPanel>
                             </motion.div>

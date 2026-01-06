@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { Sparkles, Wand2 } from "lucide-react";
 import GlassPanel from "../components/GlassPanel";
 import OptionButton from "../components/OptionButton";
 import GlowButton from "../components/GlowButton";
@@ -7,82 +8,143 @@ import ShayariCard from "../components/ShayariCard";
 
 export default function ShayariAI() {
   const options = {
-    mood: ["Happy", "Sad", "Motivated", "Romantic"],
-    depth: ["Light", "Medium", "Deep"],
+    Mood: ["Happy", "Sad", "Romantic", "Motivational"],
+    Depth: ["Light", "Medium", "Deep"],
   };
 
   const [form, setForm] = useState({
-    mood: "Happy",
-    depth: "Medium",
+    Mood: "Happy",
+    Depth: "Medium",
   });
 
   const [shayari, setShayari] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const generate = () => {
+  const generate = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setShayari("ख़ामोशी भी अब बातें करने लगी है...\nक्योंकि अल्फ़ाज़ AI ने चुन लिए हैं ✨");
+    setShayari("");
+
+    try {
+      const response = await fetch("http://localhost:5011/api/shayari/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mood: form.Mood,
+          depth: form.Depth,
+          purpose: "General",
+          personality: "Poetic"
+        }),
+      });
+
+      const data = await response.json();
+      if (data.shayari) {
+        setShayari(data.shayari);
+      }
+    } catch (err) {
+      console.error(err);
+      setShayari("Error generating shayari. Please try again.");
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
   };
 
   return (
     <>
       {/* HERO */}
-      <div className="text-center mb-14">
-        <h1 className="text-5xl font-extrabold tracking-tight">
-          <span className="gradient-text">अल्फ़ाज़</span> ✨
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center mb-16"
+      >
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
+          <span className="gradient-text">अल्फ़ाज़</span>
         </h1>
-        <p className="text-zinc-400 mt-4">
-          Soul-touching poetry powered by Artificial Intelligence
-        </p>
-      </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+        <p className="text-zinc-400 mt-4 max-w-xl mx-auto">
+          Craft soulful poetry through the harmony of emotions and artificial intelligence
+        </p>
+      </motion.div>
+
+      {/* MAIN GRID */}
+      <div className="grid lg:grid-cols-2 gap-10">
         {/* CONTROLS */}
         <GlassPanel className="p-8">
-          {Object.entries(options).map(([key, values]) => (
-            <div key={key} className="mb-6">
-              <p className="text-sm uppercase text-zinc-400 mb-3">{key}</p>
-              <div className="flex flex-wrap gap-2">
-                {values.map(v => (
-                  <OptionButton
-                    key={v}
-                    active={form[key] === v}
-                    onClick={() => setForm({ ...form, [key]: v })}
-                  >
-                    {v}
-                  </OptionButton>
-                ))}
-              </div>
-            </div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {Object.entries(options).map(([key, values]) => (
+              <div key={key} className="mb-8 text-left">
+                <p className="text-xs uppercase tracking-wider text-zinc-400 mb-4">
+                  {key}
+                </p>
 
-          <GlowButton loading={loading} onClick={generate}>
-            {loading ? (
-              <span className="flex items-center gap-2 justify-center">
-                <Sparkles className="animate-spin" /> Generating...
-              </span>
-            ) : (
-              "Generate Shayari"
-            )}
-          </GlowButton>
+                <div className="flex flex-wrap gap-3">
+                  {values.map((v) => (
+                    <OptionButton
+                      key={v}
+                      active={form[key] === v}
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          [key]: v,
+                        })
+                      }
+                    >
+                      {v}
+                    </OptionButton>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <GlowButton loading={loading} onClick={generate}>
+              {loading ? (
+                <span className="flex items-center gap-2 justify-center">
+                  <Sparkles className="animate-spin" />
+                  Creating poetry…
+                </span>
+              ) : (
+                <span className="flex items-center gap-2 justify-center">
+                  <Wand2 />
+                  Generate Shayari
+                </span>
+              )}
+            </GlowButton>
+          </motion.div>
         </GlassPanel>
 
         {/* OUTPUT */}
-        <GlassPanel className="p-8 min-h-[350px] flex items-center justify-center">
+        <GlassPanel className="p-8 min-h-[380px] flex items-center justify-center">
           {shayari ? (
-            <ShayariCard shayari={shayari} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="w-full"
+            >
+              <ShayariCard shayari={shayari} />
+            </motion.div>
           ) : (
-            <div className="text-zinc-500 text-center">
-              <Sparkles className="mx-auto mb-4 opacity-20" size={48} />
-              Select options & generate magic ✨
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-zinc-500 text-center"
+            >
+              <Sparkles
+                className="mx-auto mb-5 opacity-30"
+                size={52}
+              />
+              <p className="text-sm">
+                Select your mood and depth<br />
+                then let the magic unfold
+              </p>
+            </motion.div>
           )}
         </GlassPanel>
       </div>
     </>
   );
 }
-
