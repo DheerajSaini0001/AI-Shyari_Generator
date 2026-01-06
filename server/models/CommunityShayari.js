@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const communityShayariSchema = new mongoose.Schema({
     text: { type: String, required: true },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     authorName: { type: String, required: true },
     status: {
         type: String,

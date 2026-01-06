@@ -38,4 +38,19 @@ router.put("/:id/read", auth, async (req, res) => {
     }
 });
 
+// @route   PUT /api/notifications/read-all
+// @desc    Mark all notifications as read
+router.put("/read-all", auth, async (req, res) => {
+    try {
+        await Notification.updateMany(
+            { recipient: req.user.userId, isRead: false },
+            { $set: { isRead: true } }
+        );
+        res.json({ message: "All notifications marked as read" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 export default router;
