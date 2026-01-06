@@ -71,9 +71,9 @@ export default function Profile() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto pt-20">
+        <div className="w-full max-w-4xl mx-auto pt-20 mb-2">
             {/* Header */}
-            <div className="text-center mb-12">
+            <div    className="text-center mb-12 mx-4">
                 <div className="w-24 h-24 bg-gradient-to-br from-yellow-500 to-amber-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-yellow-500/20">
                     <span className="text-4xl font-bold text-black">{user?.name?.charAt(0) || "U"}</span>
                 </div>
@@ -84,7 +84,7 @@ export default function Profile() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-12">
+            <div className="grid grid-cols-2 gap-4 mb-12 mx-4">
                 <div className={`p-6 rounded-2xl border text-center ${darkMode ? "bg-white/5 border-white/5" : "bg-white border-gray-200"}`}>
                     <div className="text-3xl font-bold text-yellow-500 mb-1">{likes.length}</div>
                     <div className={`text-xs uppercase tracking-wider ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>Liked Shayaris</div>
@@ -95,21 +95,21 @@ export default function Profile() {
                 </div>
             </div>
 
-            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${darkMode ? "text-white/80" : "text-gray-800"}`}>
+            <h2 className={`text-2xl mx-2 font-bold mb-6 flex items-center gap-3 ${darkMode ? "text-white/80" : "text-gray-800"}`}>
                 <Heart className="w-6 h-6 text-red-500 fill-current" />
                 Liked Collection
             </h2>
 
             {loading ? (
-                <div className="text-center py-20 text-zinc-500">Loading your collection...</div>
+                <div className="text-center py-20 text-zinc-500 mx-4">Loading your collection...</div>
             ) : likes.length === 0 ? (
-                <div className="text-center py-20 glass-panel rounded-2xl border border-white/5 border-dashed">
+                <div className="text-center py-20 mx-4 glass-panel rounded-2xl border border-white/5 border-dashed">
                     <BookOpen className="w-12 h-12 mx-auto mb-4 text-zinc-600" />
                     <p className="text-zinc-400">No liked shayaris yet.</p>
                     <p className="text-sm text-zinc-600 mt-2">Go generate some magic and save your favorites!</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-4">
                     {likes.map((item, index) => (
                         <motion.div
                             key={item._id || index}
