@@ -95,7 +95,7 @@ export default function Feed() {
             ) : feed.length === 0 ? (
                 <div className="text-center py-20 text-zinc-500">No shayaris yet. Be the first to compose one!</div>
             ) : (
-                <div className="space-y-8">
+                <div className="space-y-8 mx-4">
                     {feed.map((item, index) => {
                         const isLiked = item.likes.includes(currentUserId);
                         return (

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -12,7 +13,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotificationDropdown from "./components/NotificationDropdown";
 import ThemeToggle from "./components/ThemeToggle";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
-import { User, LogOut, Home, Users, PenBox, ShieldCheck } from "lucide-react";
+import { User, LogOut, Home, Users, PenBox, ShieldCheck, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Protected Route Component
@@ -26,6 +27,7 @@ const Layout = () => {
   const isAdmin = user?.isAdmin === true;
   const { theme } = useTheme();
   const darkMode = theme === "dark";
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className={`min-h-screen w-full relative transition-colors duration-300 ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"}`}>
@@ -49,7 +51,8 @@ const Layout = () => {
               अल्फ़ाज़ ✨
             </Link>
 
-            <nav className="flex gap-4 items-center">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex gap-4 items-center">
               <ThemeToggle />
               <Link to="/" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Home">
                 <Home className="w-5 h-5" />
@@ -83,7 +86,75 @@ const Layout = () => {
                 <LogOut className="w-5 h-5" />
               </button>
             </nav>
+
+            {/* Mobile Menu Button */}
+            <div className="flex md:hidden items-center gap-4">
+              <ThemeToggle />
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`p-2 rounded-md ${darkMode ? "text-white" : "text-gray-900"}`}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Menu Dropdown */}
+          {isMobileMenuOpen && (
+            <div className={`md:hidden absolute top-full left-0 w-full border-b p-4 flex flex-col gap-4 shadow-xl ${darkMode ? "bg-black/95 border-white/5" : "bg-white/95 border-gray-200"}`}>
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? "hover:bg-white/5 text-zinc-300 hover:text-white" : "hover:bg-gray-100 text-gray-700 hover:text-black"}`}
+              >
+                <Home className="w-5 h-5" /> Home
+              </Link>
+              <Link
+                to="/feed"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? "hover:bg-white/5 text-zinc-300 hover:text-white" : "hover:bg-gray-100 text-gray-700 hover:text-black"}`}
+              >
+                <Users className="w-5 h-5" /> Community Feed
+              </Link>
+              <Link
+                to="/compose"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? "hover:bg-white/5 text-zinc-300 hover:text-white" : "hover:bg-gray-100 text-gray-700 hover:text-black"}`}
+              >
+                <PenBox className="w-5 h-5" /> Compose
+              </Link>
+
+              <div className="flex items-center justify-between px-3">
+                <span className={`text-sm ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>Notifications</span>
+                <NotificationDropdown />
+              </div>
+
+              <Link
+                to="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 p-3 rounded-lg ${darkMode ? "hover:bg-white/5 text-zinc-300 hover:text-white" : "hover:bg-gray-100 text-gray-700 hover:text-black"}`}
+              >
+                <User className="w-5 h-5" /> Profile
+              </Link>
+
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-3 rounded-lg text-yellow-500 hover:bg-yellow-500/10"
+                >
+                  <ShieldCheck className="w-5 h-5" /> Admin Dashboard
+                </Link>
+              )}
+
+              <button
+                onClick={() => { localStorage.clear(); window.location.href = "/login"; }}
+                className="flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-500/10 w-full text-left"
+              >
+                <LogOut className="w-5 h-5" /> Logout
+              </button>
+            </div>
+          )}
         </header>
 
         {/* Main Scrollable Content */}
