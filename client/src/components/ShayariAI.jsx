@@ -3,8 +3,12 @@ import { Sparkles, PenTool } from "lucide-react";
 import GlassPanel from "./GlassPanel";
 import GlowButton from "./GlowButton";
 import ShayariCard from "./ShayariCard";
+import { useTheme } from "../context/ThemeContext";
 
 export default function ShayariAI() {
+    const { theme } = useTheme();
+    const darkMode = theme === "dark";
+
     const [formData, setFormData] = useState({
         mood: "Happy",
         purpose: "Motivation",
@@ -88,24 +92,43 @@ export default function ShayariAI() {
     };
 
     return (
-        <>
+        <div
+            className={`transition-colors duration-300 min-h-screen ${
+                darkMode ? "bg-black text-gray-100" : "bg-gray-50 text-gray-900"
+            }`}
+        >
             {/* HERO */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-16 pt-12">
                 <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
                     <span className="gradient-text">अल्फ़ाज़</span>
                 </h1>
-                <p className="text-zinc-400 mt-4 max-w-xl mx-auto">
+
+                <p
+                    className={`mt-4 max-w-xl mx-auto ${
+                        darkMode ? "text-zinc-400" : "text-gray-600"
+                    }`}
+                >
                     Craft soulful poetry through the harmony of emotions and artificial intelligence
                 </p>
             </div>
 
             {/* MAIN GRID */}
-            <div className="grid lg:grid-cols-2 gap-10">
+            <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto px-6">
                 {/* CONTROLS */}
-                <GlassPanel className="p-8">
+                <GlassPanel
+                    className={`p-8 ${
+                        darkMode
+                            ? "bg-white/5 border-white/10"
+                            : "bg-white border-gray-200"
+                    }`}
+                >
                     {Object.entries(options).map(([key, values]) => (
                         <div key={key} className="mb-8 text-left">
-                            <p className="text-xs uppercase tracking-wider text-zinc-400 mb-4">
+                            <p
+                                className={`text-xs uppercase tracking-wider mb-4 ${
+                                    darkMode ? "text-zinc-400" : "text-gray-500"
+                                }`}
+                            >
                                 {key}
                             </p>
 
@@ -113,10 +136,16 @@ export default function ShayariAI() {
                                 {values.map((v) => (
                                     <button
                                         key={v}
-                                        onClick={() => setFormData({ ...formData, [key]: v })}
-                                        className={`px-4 py-2 rounded-full border text-sm transition-all ${formData[key] === v
-                                                ? "bg-yellow-500 text-black border-yellow-400 neon-glow"
-                                                : "bg-zinc-900/60 text-zinc-400 border-zinc-700 hover:border-zinc-500"
+                                        onClick={() =>
+                                            setFormData({ ...formData, [key]: v })
+                                        }
+                                        className={`px-4 py-2 rounded-full border text-sm transition-all
+                                            ${
+                                                formData[key] === v
+                                                    ? "bg-yellow-500 text-black border-yellow-400 neon-glow"
+                                                    : darkMode
+                                                    ? "bg-zinc-900/60 text-zinc-400 border-zinc-700 hover:border-zinc-500"
+                                                    : "bg-gray-100 text-gray-700 border-gray-300 hover:border-gray-500"
                                             }`}
                                     >
                                         {v}
@@ -142,7 +171,13 @@ export default function ShayariAI() {
                 </GlassPanel>
 
                 {/* OUTPUT */}
-                <GlassPanel className="p-8 min-h-[380px] flex items-center justify-center relative">
+                <GlassPanel
+                    className={`p-8 min-h-[380px] flex items-center justify-center ${
+                        darkMode
+                            ? "bg-white/5 border-white/10"
+                            : "bg-white border-gray-200"
+                    }`}
+                >
                     {shayari ? (
                         <ShayariCard
                             shayari={shayari}
@@ -152,9 +187,19 @@ export default function ShayariAI() {
                             isLiked={isLiked}
                         />
                     ) : (
-                        <div className="text-zinc-500 text-center">
+                        <div
+                            className={`text-center ${
+                                darkMode ? "text-zinc-500" : "text-gray-500"
+                            }`}
+                        >
                             {error ? (
-                                <div className="text-red-400 bg-red-900/20 p-4 rounded-lg border border-red-900/40">
+                                <div
+                                    className={`p-4 rounded-lg border ${
+                                        darkMode
+                                            ? "text-red-400 bg-red-900/20 border-red-900/40"
+                                            : "text-red-600 bg-red-100 border-red-300"
+                                    }`}
+                                >
                                     {error}
                                 </div>
                             ) : (
@@ -164,7 +209,8 @@ export default function ShayariAI() {
                                         size={52}
                                     />
                                     <p className="text-sm">
-                                        Select your mood and depth<br />
+                                        Select your mood and depth
+                                        <br />
                                         then let the magic unfold
                                     </p>
                                 </>
@@ -173,6 +219,6 @@ export default function ShayariAI() {
                     )}
                 </GlassPanel>
             </div>
-        </>
+        </div>
     );
 }

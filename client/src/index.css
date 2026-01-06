@@ -39,15 +39,15 @@
   @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500;
 }
 #root {
-  max-width: 1280px;
+  max-width: auto;
   margin: 0 auto;
-  padding: 2rem;
+
   text-align: center;
 }
 
 .logo {
   height: 6em;
-  padding: 1.5em;
+
   will-change: filter;
   transition: filter 300ms;
 }

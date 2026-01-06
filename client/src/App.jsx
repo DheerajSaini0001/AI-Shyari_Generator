@@ -10,6 +10,8 @@ import Compose from "./pages/Compose";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotificationDropdown from "./components/NotificationDropdown";
+import ThemeToggle from "./components/ThemeToggle";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { User, LogOut, Home, Users, PenBox, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -22,37 +24,47 @@ const ProtectedRoute = () => {
 const Layout = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.isAdmin === true;
+  const { theme } = useTheme();
+  const darkMode = theme === "dark";
 
   return (
-    <div className="min-h-screen w-full relative">
+    <div className={`min-h-screen w-full relative transition-colors duration-300 ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"}`}>
       {/* Background - Fixed */}
-      <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2574&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat -z-20"></div>
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm -z-10"></div>
+      {darkMode && (
+        <>
+          <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2574&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat -z-20"></div>
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm -z-10"></div>
+        </>
+      )}
+      {!darkMode && (
+        <div className="fixed inset-0 bg-gray-50 -z-20"></div>
+      )}
 
       {/* Content Structure */}
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Static Header */}
-        <header className="w-full p-4 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <Link to="/" className="text-xl font-bold tracking-tight text-white hover:text-yellow-500 transition-colors">
+        <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-md transition-colors ${darkMode ? "border-white/5 bg-black/20" : "border-gray-200 bg-white/80"}`}>
+          <div className="w-full px-4 flex justify-between items-center">
+            <Link to="/" className={`text-xl font-bold tracking-tight hover:text-yellow-500 transition-colors ${darkMode ? "text-white" : "text-gray-900"}`}>
               अल्फ़ाज़ ✨
             </Link>
 
             <nav className="flex gap-4 items-center">
-              <Link to="/" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Home">
+              <ThemeToggle />
+              <Link to="/" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Home">
                 <Home className="w-5 h-5" />
               </Link>
-              <Link to="/feed" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Community Feed">
+              <Link to="/feed" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Community Feed">
                 <Users className="w-5 h-5" />
               </Link>
-              <Link to="/compose" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Compose">
+              <Link to="/compose" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Compose">
                 <PenBox className="w-5 h-5" />
               </Link>
 
               {/* Notification Dropdown */}
               <NotificationDropdown />
 
-              <Link to="/profile" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Profile">
+              <Link to="/profile" className={`p-2 rounded-full transition-colors ${darkMode ? "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900"}`} title="Profile">
                 <User className="w-5 h-5" />
               </Link>
 
@@ -75,7 +87,7 @@ const Layout = () => {
         </header>
 
         {/* Main Scrollable Content */}
-        <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8 flex flex-col items-center">
+        <main className="flex-1 w-full flex flex-col items-center">
           <Outlet />
         </main>
       </div>
@@ -85,33 +97,34 @@ const Layout = () => {
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen w-full font-sans text-white bg-black">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/verify/:token" element={<VerifyEmail />} />
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen w-full font-sans transition-colors">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/verify/:token" element={<VerifyEmail />} />
 
-          {/* Private Routes */}
-          <Route element={<ProtectedRoute />}>
-            {/* Main App Layout */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<ShayariAI />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/feed" element={<Feed />} />
-              <Route path="/compose" element={<Compose />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+            {/* Private Routes */}
+            <Route element={<ProtectedRoute />}>
+              {/* Main App Layout */}
+              <Route element={<Layout />}>
+                <Route path="/" element={<ShayariAI />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/feed" element={<Feed />} />
+                <Route path="/compose" element={<Compose />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+              </Route>
             </Route>
-          </Route>
-// ...
 
-          {/* Redirect unknown to login */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </div>
-    </Router>
+            {/* Redirect unknown to login */}
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

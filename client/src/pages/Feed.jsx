@@ -3,10 +3,13 @@ import { useState, useEffect } from "react";
 import { Copy, Heart, Clock, User as UserIcon, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassPanel from "../components/GlassPanel";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Feed() {
     const [feed, setFeed] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { theme } = useTheme();
+    const darkMode = theme === "dark";
 
     useEffect(() => {
         fetchFeed();
@@ -79,12 +82,12 @@ export default function Feed() {
     const currentUserId = currentUser?.id;
 
     return (
-        <div className="w-full max-w-3xl mx-auto">
+        <div className="w-full max-w-3xl mx-auto pt-20">
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
                     Community <span className="gradient-text">Feed</span>
                 </h1>
-                <p className="text-zinc-400">Discover gems from other poets.</p>
+                <p className={`${darkMode ? "text-zinc-400" : "text-gray-600"}`}>Discover gems from other poets.</p>
             </div>
 
             {loading ? (
@@ -102,16 +105,16 @@ export default function Feed() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
                             >
-                                <GlassPanel className="p-8 relative overflow-hidden group">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-zinc-700 to-transparent opacity-30"></div>
+                                <GlassPanel className={`p-8 relative overflow-hidden group ${darkMode ? "bg-white/5 border-white/10" : "bg-white border-gray-200"}`}>
+                                    <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${darkMode ? "via-zinc-700" : "via-gray-300"} to-transparent opacity-30`}></div>
 
                                     {/* Author Header */}
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center border border-zinc-700">
-                                            <span className="font-bold text-zinc-400">{item.authorName?.charAt(0)}</span>
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${darkMode ? "bg-zinc-800 border-zinc-700" : "bg-gray-100 border-gray-300"}`}>
+                                            <span className={`font-bold ${darkMode ? "text-zinc-400" : "text-gray-600"}`}>{item.authorName?.charAt(0)}</span>
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-zinc-200">{item.authorName}</h3>
+                                            <h3 className={`font-bold ${darkMode ? "text-zinc-200" : "text-gray-800"}`}>{item.authorName}</h3>
                                             <div className="flex items-center gap-1 text-xs text-zinc-500">
                                                 <Clock className="w-3 h-3" />
                                                 {new Date(item.createdAt).toLocaleDateString()}
@@ -120,18 +123,23 @@ export default function Feed() {
                                     </div>
 
                                     {/* Content */}
-                                    <div className="pl-4 border-l-2 border-yellow-500/20 mb-6">
-                                        <p className="text-xl md:text-2xl text-yellow-100/90 font-serif whitespace-pre-line leading-relaxed">
+                                    <div className={`pl-4 border-l-2 mb-6 ${darkMode ? "border-yellow-500/20" : "border-yellow-500/50"}`}>
+                                        <p className={`text-xl md:text-2xl font-serif whitespace-pre-line leading-relaxed ${darkMode ? "text-yellow-100/90" : "text-gray-800"}`}>
                                             {item.text}
                                         </p>
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                    <div className={`flex items-center justify-between pt-4 border-t ${darkMode ? "border-white/5" : "border-gray-100"}`}>
                                         <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => handleLike(item._id)}
-                                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${isLiked ? "text-red-500 bg-red-500/10" : "text-zinc-400 hover:text-red-400 hover:bg-zinc-800"}`}
+                                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${isLiked
+                                                    ? "text-red-500 bg-red-500/10"
+                                                    : darkMode
+                                                        ? "text-zinc-400 hover:text-red-400 hover:bg-zinc-800"
+                                                        : "text-gray-500 hover:text-red-500 hover:bg-gray-100"
+                                                    }`}
                                             >
                                                 <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
                                                 <span className="text-sm font-medium">{item.likes.length}</span>
@@ -141,7 +149,7 @@ export default function Feed() {
                                         <div className="flex items-center gap-3">
                                             <button
                                                 onClick={() => copyToClipboard(item.text)}
-                                                className="text-zinc-500 hover:text-yellow-500 transition-colors"
+                                                className={`transition-colors ${darkMode ? "text-zinc-500 hover:text-yellow-500" : "text-gray-400 hover:text-yellow-600"}`}
                                                 title="Copy"
                                             >
                                                 <Copy className="w-4 h-4" />

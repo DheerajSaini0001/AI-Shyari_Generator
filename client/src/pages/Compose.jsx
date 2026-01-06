@@ -4,11 +4,14 @@ import { PenTool, Send } from "lucide-react";
 import GlassPanel from "../components/GlassPanel";
 import GlowButton from "../components/GlowButton";
 import { motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Compose() {
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState(""); // success or error message
+    const [status, setStatus] = useState("");
+    const { theme } = useTheme();
+    const darkMode = theme === "dark";
 
     const handleSubmit = async () => {
         if (!text.trim()) return;
@@ -41,24 +44,28 @@ export default function Compose() {
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto">
+        <div className="w-full max-w-2xl mx-auto pt-20">
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
                     Compose <span className="gradient-text">Shayari</span>
                 </h1>
-                <p className="text-zinc-400">Share your own words with the world.</p>
+                <p className={`${darkMode ? "text-zinc-400" : "text-gray-600"}`}>Share your own words with the world.</p>
             </div>
 
-            <GlassPanel className="p-8">
+            <GlassPanel className={`p-8 ${darkMode ? "bg-white/5 border-white/10" : "bg-white border-gray-200"}`}>
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-zinc-300 uppercase tracking-wider mb-2">
+                    <label className={`block text-sm font-medium uppercase tracking-wider mb-2 ${darkMode ? "text-zinc-300" : "text-gray-600"}`}>
                         Your Masterpiece
                     </label>
                     <textarea
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         placeholder="Dil ki baat, lafzon ke saath..."
-                        className="w-full h-48 bg-black/40 border border-zinc-700 rounded-xl p-4 text-yellow-100 font-serif text-xl focus:border-yellow-500 focus:outline-none transition-colors resize-none leading-relaxed"
+                        className={`w-full h-48 border rounded-xl p-4 font-serif text-xl focus:outline-none transition-colors resize-none leading-relaxed
+                            ${darkMode
+                                ? "bg-black/40 border-zinc-700 text-yellow-100 focus:border-yellow-500 placeholder:text-zinc-600"
+                                : "bg-gray-50 border-gray-300 text-gray-800 focus:bg-white focus:border-yellow-600 placeholder:text-gray-400"
+                            }`}
                     />
                 </div>
 

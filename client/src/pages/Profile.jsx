@@ -2,11 +2,14 @@
 import { useState, useEffect } from "react";
 import { Copy, Heart, BookOpen, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Profile() {
     const [likes, setLikes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const { theme } = useTheme();
+    const darkMode = theme === "dark";
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -68,31 +71,31 @@ export default function Profile() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full max-w-4xl mx-auto pt-20">
             {/* Header */}
             <div className="text-center mb-12">
                 <div className="w-24 h-24 bg-gradient-to-br from-yellow-500 to-amber-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-yellow-500/20">
                     <span className="text-4xl font-bold text-black">{user?.name?.charAt(0) || "U"}</span>
                 </div>
-                <h1 className="text-4xl font-extrabold mb-2 text-white/90 tracking-tight">
+                <h1 className={`text-4xl font-extrabold mb-2 tracking-tight ${darkMode ? "text-white/90" : "text-gray-900"}`}>
                     {user?.name || "Your Profile"}
                 </h1>
-                <p className="text-zinc-400">Your personal collection of gems</p>
+                <p className={`${darkMode ? "text-zinc-400" : "text-gray-600"}`}>Your personal collection of gems</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4 mb-12">
-                <div className="glass-panel p-6 rounded-2xl border border-white/5 text-center">
+                <div className={`p-6 rounded-2xl border text-center ${darkMode ? "bg-white/5 border-white/5" : "bg-white border-gray-200"}`}>
                     <div className="text-3xl font-bold text-yellow-500 mb-1">{likes.length}</div>
-                    <div className="text-xs uppercase tracking-wider text-zinc-500">Liked Shayaris</div>
+                    <div className={`text-xs uppercase tracking-wider ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>Liked Shayaris</div>
                 </div>
-                <div className="glass-panel p-6 rounded-2xl border border-white/5 text-center">
+                <div className={`p-6 rounded-2xl border text-center ${darkMode ? "bg-white/5 border-white/5" : "bg-white border-gray-200"}`}>
                     <div className="text-3xl font-bold text-blue-500 mb-1">Coming Soon</div>
-                    <div className="text-xs uppercase tracking-wider text-zinc-500">Shared Gems</div>
+                    <div className={`text-xs uppercase tracking-wider ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>Shared Gems</div>
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3 text-white/80">
+            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${darkMode ? "text-white/80" : "text-gray-800"}`}>
                 <Heart className="w-6 h-6 text-red-500 fill-current" />
                 Liked Collection
             </h2>
@@ -113,30 +116,30 @@ export default function Profile() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="glass-panel p-6 rounded-xl border border-white/5 hover:border-white/10 transition-all group relative overflow-hidden"
+                            className={`p-6 rounded-xl border transition-all group relative overflow-hidden ${darkMode ? "bg-white/5 border-white/5 hover:border-white/10" : "bg-white border-gray-200 hover:border-gray-300"}`}
                         >
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                                 <button
                                     onClick={() => copyToClipboard(item.text)}
-                                    className="p-2 bg-black/50 rounded-full hover:bg-yellow-500 hover:text-black transition-colors"
+                                    className={`p-2 rounded-full transition-colors ${darkMode ? "bg-black/50 hover:bg-yellow-500 hover:text-black" : "bg-gray-100 hover:bg-yellow-500 hover:text-white"}`}
                                     title="Copy"
                                 >
                                     <Copy className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() => deleteLike(item._id)}
-                                    className="p-2 bg-black/50 rounded-full hover:bg-red-500 hover:text-white transition-colors"
+                                    className={`p-2 rounded-full transition-colors ${darkMode ? "bg-black/50 hover:bg-red-500 hover:text-white" : "bg-gray-100 hover:bg-red-500 hover:text-white"}`}
                                     title="Remove from favorites"
                                 >
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <p className="text-lg text-yellow-100/90 leading-relaxed font-serif whitespace-pre-line mb-4">
+                            <p className={`text-lg leading-relaxed font-serif whitespace-pre-line mb-4 ${darkMode ? "text-yellow-100/90" : "text-gray-800"}`}>
                                 {item.text}
                             </p>
 
-                            <div className="text-xs text-zinc-600 flex justify-between items-center mt-4 border-t border-white/5 pt-4">
+                            <div className={`text-xs flex justify-between items-center mt-4 border-t pt-4 ${darkMode ? "text-zinc-600 border-white/5" : "text-gray-500 border-gray-100"}`}>
                                 <span>{new Date(item.likedAt).toLocaleDateString()}</span>
                                 <Heart className="w-4 h-4 text-red-500 fill-current" />
                             </div>
