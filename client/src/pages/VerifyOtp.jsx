@@ -56,14 +56,14 @@ export default function VerifyOtp() {
 
     if (!email) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-black text-white">
+            <div className="min-h-screen mx-2 flex items-center justify-center bg-black text-white">
                 <p>No email provided. <Link to="/login" className="text-yellow-500">Go to Login</Link></p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black/90 p-4">
+        <div className="min-h-screen mx-2 flex items-center justify-center bg-black/90 p-4">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

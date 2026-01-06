@@ -138,7 +138,7 @@ export default function Signup() {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-black via-[#050816] to-black text-white">
+        <div className="mx-2 relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-black via-[#050816] to-black text-white">
 
             {/* Ambient Background */}
             <Login3D />

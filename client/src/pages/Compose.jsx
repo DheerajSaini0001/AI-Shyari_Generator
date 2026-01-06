@@ -44,7 +44,7 @@ export default function Compose() {
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto pt-20">
+        <div className="w-full max-w-2xl mx-auto pt-20 mb-4">
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
                     Compose <span className="gradient-text">Shayari</span>

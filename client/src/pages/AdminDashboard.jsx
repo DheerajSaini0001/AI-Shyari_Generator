@@ -47,7 +47,7 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full max-w-4xl mx-2 mb-4">
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
                     Admin <span className="gradient-text">Dashboard</span>

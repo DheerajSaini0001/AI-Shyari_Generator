@@ -30,7 +30,7 @@ export default function VerifyEmail() {
     }, [token]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black/90 p-4 font-sans text-center">
+        <div className="mx-2 min-h-screen flex items-center justify-center bg-black/90 p-4 font-sans text-center">
             <div className="glass-panel p-8 rounded-2xl w-full max-w-sm">
                 {status === "verifying" && (
                     <p className="text-yellow-500 text-xl animate-pulse">Verifying your email...</p>

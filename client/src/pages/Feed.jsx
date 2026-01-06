@@ -82,7 +82,7 @@ export default function Feed() {
     const currentUserId = currentUser?.id;
 
     return (
-        <div className="w-full max-w-3xl mx-auto pt-20">
+        <div className="w-full max-w-3xl mx-auto pt-20 mb-4">
             <div className="text-center mb-10">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
                     Community <span className="gradient-text">Feed</span>

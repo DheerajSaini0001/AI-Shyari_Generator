@@ -165,7 +165,7 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-black via-[#050816] to-black text-white">
+    <div className="relative mx-2 min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-black via-[#050816] to-black text-white">
 
       {/* Ambient Background */}
       <Login3D />
