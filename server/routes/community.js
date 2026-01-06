@@ -60,6 +60,21 @@ router.get("/feed", async (req, res) => {
     }
 });
 
+// @route   GET /api/community/my-posts
+// @desc    Get current user's approved shayaris
+router.get("/my-posts", auth, async (req, res) => {
+    try {
+        const posts = await CommunityShayari.find({
+            author: req.user.userId,
+            status: "approved"
+        }).sort({ createdAt: -1 });
+        res.json(posts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 // @route   POST /api/community/like/:id
 // @desc    Like a community shayari
 router.post("/like/:id", auth, async (req, res) => {
