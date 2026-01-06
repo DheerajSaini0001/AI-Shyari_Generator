@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ai-shayari"
     .catch(err => console.error(err));
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:5173", "http://localhost:5174", "https://alfaaz-ten.vercel.app"],
     credentials: true
 }));
 app.use(express.json());
