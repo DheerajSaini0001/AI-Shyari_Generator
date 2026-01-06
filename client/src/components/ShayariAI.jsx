@@ -113,7 +113,7 @@ export default function ShayariAI() {
             </div>
 
             {/* MAIN GRID */}
-            <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto px-6">
+            <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto px-6 pb-4">
                 {/* CONTROLS */}
                 <GlassPanel
                     className={`p-8 ${

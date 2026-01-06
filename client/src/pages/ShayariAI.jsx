@@ -67,7 +67,7 @@ export default function ShayariAI() {
       </motion.div>
 
       {/* MAIN GRID */}
-      <div className="grid lg:grid-cols-2 gap-10">
+      <div className="grid lg:grid-cols-2 gap-10 mb-4">
         {/* CONTROLS */}
         <GlassPanel className="p-8">
           <motion.div

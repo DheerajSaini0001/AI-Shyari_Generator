@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Copy, Heart, Clock, User as UserIcon, Share2 } from "lucide-react";
+import { Copy, Heart, Clock, User as UserIcon, Share2, Sparkles, PenTool } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassPanel from "../components/GlassPanel";
 import { useTheme } from "../context/ThemeContext";
@@ -8,16 +8,18 @@ import { useTheme } from "../context/ThemeContext";
 export default function Feed() {
     const [feed, setFeed] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("composed"); // 'alfaaz' or 'composed'
     const { theme } = useTheme();
     const darkMode = theme === "dark";
 
     useEffect(() => {
         fetchFeed();
-    }, []);
+    }, [activeTab]);
 
     const fetchFeed = async () => {
+        setLoading(true);
         try {
-            const response = await fetch("http://localhost:5011/api/community/feed");
+            const response = await fetch(`http://localhost:5011/api/community/feed?type=${activeTab}`);
             if (response.ok) {
                 const data = await response.json();
                 setFeed(data);
@@ -88,6 +90,30 @@ export default function Feed() {
                     Community <span className="gradient-text">Feed</span>
                 </h1>
                 <p className={`${darkMode ? "text-zinc-400" : "text-gray-600"}`}>Discover gems from other poets.</p>
+            </div>
+
+            {/* Tabs Header */}
+            <div className="flex items-center justify-center gap-8 mb-12 border-b border-gray-200 dark:border-white/10 pb-2 mx-4">
+                <button
+                    onClick={() => setActiveTab("alfaaz")}
+                    className={`text-lg font-bold flex items-center gap-2 pb-2 transition-colors relative ${activeTab === "alfaaz" ? (darkMode ? "text-yellow-400" : "text-yellow-600") : (darkMode ? "text-zinc-500 hover:text-zinc-300" : "text-gray-400 hover:text-gray-600")}`}
+                >
+                    <Sparkles className={`w-5 h-5 ${activeTab === "alfaaz" ? "fill-current" : ""}`} />
+                    Alfaaz Feed
+                    {activeTab === "alfaaz" && (
+                        <motion.div layoutId="activeTabFeed" className="absolute bottom-0 left-0 right-0 h-0.5 bg-current" />
+                    )}
+                </button>
+                <button
+                    onClick={() => setActiveTab("composed")}
+                    className={`text-lg font-bold flex items-center gap-2 pb-2 transition-colors relative ${activeTab === "composed" ? "text-blue-500" : (darkMode ? "text-zinc-500 hover:text-zinc-300" : "text-gray-400 hover:text-gray-600")}`}
+                >
+                    <PenTool className="w-5 h-5" />
+                    Composed Feed
+                    {activeTab === "composed" && (
+                        <motion.div layoutId="activeTabFeed" className="absolute bottom-0 left-0 right-0 h-0.5 bg-current" />
+                    )}
+                </button>
             </div>
 
             {loading ? (
