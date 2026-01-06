@@ -132,3 +132,11 @@ Auto-published to feed: new ObjectId('695cd1a516c72e7b2d8a4cf3')
 [0mGET /api/shayari/liked [36m304[0m 43.312 ms - -[0m
 [0mGET /api/community/my-posts [36m304[0m 47.681 ms - -[0m
 [0mGET /api/notifications [36m304[0m 35.870 ms - -[0m
+[0mGET /api/notifications [36m304[0m 47.709 ms - -[0m
+[0mGET /api/notifications [36m304[0m 33.517 ms - -[0m
+[0mGET /api/notifications [36m304[0m 33.978 ms - -[0m
+[0mGET /api/notifications [36m304[0m 34.693 ms - -[0m
+[0mGET /api/notifications [36m304[0m 33.872 ms - -[0m
+[0mGET /api/notifications [36m304[0m 33.349 ms - -[0m
+[0mGET /api/notifications [36m304[0m 33.292 ms - -[0m
+[0mGET /api/notifications [36m304[0m 32.206 ms - -[0m
