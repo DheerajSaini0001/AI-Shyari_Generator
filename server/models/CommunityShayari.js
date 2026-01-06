@@ -10,7 +10,8 @@ const communityShayariSchema = new mongoose.Schema({
         default: 'pending'
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    expiresAt: { type: Date, index: { expires: 0 } } // TTL Index: Documents expire when this date is reached
 });
 
 export default mongoose.model("CommunityShayari", communityShayariSchema);
